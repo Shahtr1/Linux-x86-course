@@ -163,7 +163,241 @@ Can be accessed at much higher speeds than conventional memory.
       The ES is the extra segment register, for variables in memory.
 
   5. Flags Register     Flags
-    The flags contains flags of processor    
+    The flags contains flags of processor
+
+-------------------------------------------------------------------------------------------------------------------------
+
+80386(32-bit)
+
+1. General Purpose Registers(32-bit):     8
+2. Segment Registers(16-bit):     6
+3. Processor Status Flags Register(EFLAGS):     1
+4. Instruction Pointer(EIP):      1
+
+GPR:  EAX   EBX   ECX   EDX   EBP   ESP  ESI  EDI
+
+SR:   CS    SS    DS    ES    FS    GS
+
+Index registers are also known as Specialized Registers
+                
+                 32-Bit                     16-Bit
+                 ESI                          SI  
+                 EDI                          DI  
+                 EBP                          BP
+                 ESP                          SP
+
+---------------------------------------------------------------------------------------------------------------------------
+Pentium 4 (x64)
+It has 16 GPRs.
+GPR:    RAX   RBX   RCX   RDX   RBP   RSP   RSI   RDI   R8    R9    R10   R11   R12   R13   R14   R15
+
+RIP       RFLAGS
+
+we can reference lowest 8-bit in register RAX as AL and highest as AH same goes for 32-Bit registers
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+x86 FLAGS
+        1         Set
+        0         Reset/Clear
+
+    There are two groups of flags in x86.
+    These are:
+    1.  Control flags
+    2.  Status Flags
+
+    Control Flags
+      Control CPU operations, to break after completion, or cause the CPU to interrupt when an arithmetic overflow is detected.
+
+    Status Flags
+      Reflect outcome of arithmetic and logical operations performed by the CPU.
+      They are:
+      a. Overflow(OF):  Set when the result of an signed arithmetic operation is too large to fit into the destination.
+      b. Sign(SF):  Set when the result of an arithmetic or logical operation is negative.
+      c. Zero(ZF):  Set when the result of an arithmetic or logical operation is zero.
+      d. Carry(CF): Set when the result of an unsigned arithmetic operation is too large to fit into the destination.
+      e. Parity flag(PF): Set if the least-significant byte in the result contains an even number of 1 bits.(Error checking)
+      f. Auxiliary Carry(AC): Set when an arithmetic operation causes a carry from bit 3 to bit 4 in an 8-bit operand
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+x86 SIMD and Floating-Point Registers
+MMX Registers
+1.  Pentium processors were first to have them.
+2.  8 64-bit registers.
+3.  They support special instructions like SIMD(Single Instructions Multiple Data)
+
+The x86 architecture also contains 8 128-bit XMM Registers.
+
+The FPU(Floating Point Unit) has been integrated on the main processor chip from Intel 486, before that a separate chip was required.
+There are 8 floating point registers in the FPU.
+These are :   ST(0)   ST(1)   ST(2)   ST(3)   ST(4)   ST(5)   ST(6)   ST(7) (80 bit Data Registers)
+
+There are also 2 Pointer Registers
+These are :   FPU Instruction Pointer         FPU Data Pointer    (48-bit Pointer Registers)
+
+There are also 3 Control Registers
+These are:    Tag Register      Control Register      Status Register     (16 - bit Control Registers)
+
+we also have an Opcode Register
+The FPU is sometimes called a x87 architecture
+The FPU's 8 registers are organized as a stack.
+
+The FPU instruction set support 3 types of memory operands.
+1. Signed Integer
+2. Floating Point
+3. Packed BCD
+
+Use of Signed bit Integer operands include 16-bit Word, 32-bit Doubleword, 64-bit Quadword.
+Supported Floating point operands include the 32-bit Single Precision, 64-bit Double Precision, 80-bit Double Extended Precision
+Many C and C++ compilers use Single and Double Precision operand types to implement float and double values respectively.
+
+The x87 FPU encodes floating point values using 3 distinct fields.
+we have: The Significand, The exponent, and the Signed bit
+The Significand field represents the numbers significant digit, or the fractional part.
+The exponent field locates the binary or decimal point in the significand which determines the magnitude
+The Signed bit indicates whether the number is positive or negative, if S = 0, then positive and if S = 1 then negative.
+
+----------------------------------------------------------------------------------------------------------------------------------
+
+x86 Memory Model
+
+Real-Address Mode:- Only 1MB of memory can be addressed
+From 00000 to FFFFF
+Processor can run only one program at a time but it can interrupt that program for a moment to process the request from peripherals
+Application programs can access any memory location
+
+Protected Mode:- Processor can run only multiple programs at a time
+Each running program is assigned 4GB of memory
+Programs cannot access each other's code and data
+MS Windows and Linux run in protected mode.
+
+Virtual-8086 Mode:-Computer runs in protected mode. Processor creates a virtual 8086 machine with its own 1MB of address space that simulates an 8086 computer running in Real-Address Mode.
+
+    8000 : 0000
+      ^     ^
+      |     |
+     seg   ofs
+
+Byte Addressable Memory: Each byte location(8-bit) has separate address
+
+In Real Address mode,the linear address is 20-Bit ranging from 0 to FFFFF.
+Programs cannot use linear addresses directly, so addresses are expressed using 2-16 Bit integers.
+A segment offset address includes a 16-bit segment value, placed in one of the segment registers like CS, DS, ES or SS.
+The CPU automatically converts the segment offset value to a 20-bit .
+
+For Example
+  Segment-offset address        08F1:0100
+  The CPU multiplies the segment value by 16 
+  0851 x 0100 = 08F10h
+  Add the offset : 0851:0100
+  08F10
+  +0100
+
+Program Segments:
+1. CODE
+2. DATA
+3. STACK
+
+CS contains the 16-bit code segment address
+DS contains the 16-bit data segment address
+SS contains the 16-bit stack segment address
+
+
+In Protected Mode
+There is 4GB Linear address space
+
+
+
+Base address    limit     access
+00000000        0040       ----
+
+upto FFFFFFFF only upto 00040000 is used in this case.
+
+--------------------------------------------------------------------------------------------------------------------------
+
+64-bit register     |     Lower 32 bits     |     Lower 16 bits     |     Lower 8 bits
+======================================================================================
+      rax           |         eax           |         ax            |       al
+      rbx           |         ebx           |         bx            |       bl
+      rcx           |         ecx           |         cx            |       cl
+      rdx           |         edx           |         dx            |       dl
+      rsi           |         esi           |         si            |       sil
+      rdi           |         edi           |         di            |       dil
+      rbp           |         ebp           |         bp            |       bpl
+      rsp           |         esp           |         sp            |       spl
+      r8            |         r8d           |        r8w            |       r8b
+      r9            |         r9d           |        r9w            |       r9b
+      r10           |         r10d          |        r10w           |       r10b 
+      r11           |         r11d          |        r11w           |       r11b
+      r12           |         r12d          |        r12w           |       r12b
+      r13           |         r13d          |        r13w           |       r13b
+      r14           |         r14d          |        r14w           |       r14b
+      r15           |         r15d          |        r15w           |       r15b
+=====================================================================================
+
+----------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
