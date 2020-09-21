@@ -338,6 +338,111 @@ upto FFFFFFFF only upto 00040000 is used in this case.
 
 ----------------------------------------------------------------------------------------------------------------------
 
+x86 Integer Constants
+
+  + or - digits radix
+
+  Radix can be:
+  H     Hexadecimal
+  r     Encoded real
+  q/o   Octal
+  t     Decimal
+  d     Decimal
+  y     Binary
+  b     Binary
+
+--------------------------------------------------------------------------------------------------------------------
+Integer Precedence
+          Operator                Name                  Precedence
+          ()                     Parentheses                 1
+          + , -              Unary plus,Unary minus          2
+          * , /                 Multiply,Divide              3
+          MOD                       Modulus                  3
+          + , -                 Add, Subtract                4
+
+-------------------------------------------------------------------------------------------------------------------   
+
+Directives and Instructions
+
+Directives?
+1. Assist and control assembly process.
+2. They are not part of the instruction set, they aren't instructions.
+3. Are also called pseudo-ops.
+4. They change the way code is assembled.
+
+Some Directives are:
+  .CODE - Indicates the start of a code segment
+  .DATA - Indicates the start of a data segment
+  .STACK  - Indicates the start of a stack segment
+  .END  - Marks the end of a module
+  .DD - Allocate a double word (4 bytes) storage
+  .DWORD  - Allocate a double word(4 bytes) storage
+
+Instructions?
+1.  A statement that becomes executable when a program is assembled
+2.  Are translated by assembler into machine language bytes.
+  An instruction has 4 parts, of which two are optional
+      [label:] mnemonic [operands] [;comment]
+      label and comment are optional, other 2 are required
+
+      E.g.,
+      start : mov eax,10000h ; EAX = 10000h
+
+      Label:  Used as a place marker for instructions and data. it implies the instruction's address
+
+      Data Labels
+      E.g.,
+        count DWORD 100
+        we have declared a 32-bit variable called count and value assigned to it is 100.
+
+      E.g.,
+        amount DWORD 1024, 2048
+               DWORD 4069, 8192
+        amount defines the location of first number which is 1024, other numbers follow consecutively.
+
+      Code Labels
+        A label with code, must end with a colon(:)
+      E.g.,
+        start:
+            mov ax, bx
+            ...
+            jmp start
+
+      Mnemonic : Identifies an instruction
+      E.g.,
+      mov : Move (assign) one value to another
+      add : Add two values
+      sub : Subtract one value from another
+      mul : Multiply two values
+      jmp : Jump to a new location
+      Call: Call a procedure
+
+      Operand : quantity on which an operation can be done
+            Operator          Name
+              20              Constant
+              35-7            Constant expression
+              EAX             Register
+              count           Memory
+
+      Comment
+      Block Comments:
+        COMMENT !
+        This is awesome
+        Isn't it?
+        !
+
+        COMMENT &
+        This is awesome
+        Isn't it?
+        &
+
+      Single line Comments:
+        just use semi-colon before the comment.
+
+----------------------------------------------------------------------------------------------------------------------------
+
+
+
 
 
 
