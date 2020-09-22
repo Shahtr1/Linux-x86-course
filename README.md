@@ -441,16 +441,136 @@ Instructions?
 
 ----------------------------------------------------------------------------------------------------------------------------
 
+Endianness
+
+It describes how data is stored and retrieved from memory.
+x86 use the little endian order.
+This means that the least significant byte is stored at the first memory address allocated for the data, the remaining byte are stored at the next consecutive positions.
+        E.g.,
+          12345678h                                   
+            Offset      Value                         Offset        Value
+            0000          78                          0000          12
+            0001          56                          0001          34
+            0002          34                          0002          56
+            0003          12                          0003          78
+
+            Little Endian                                 Big Endian
+----------------------------------------------------------------------------------------------------------------------------------
+Call Conventions
+
+      x86 32                                      x86 64                                      x87 (FP)
+
+  1st argument = ebx                        1st argument = rdi                            1st argument = xmm0
+  2nd argument = ecx                        2nd argument = rsi                            2nd argument = xmm1
+  3rd argument = edx                        3rd argument = rdx                            3rd argument = xmm2
+  4th argument = esi                        4th argument = rcx                            4th argument = xmm3
+  5th argument = edi                        5th argument = r8                             5th argument = xmm4
+  6th argument = ebp                        6th argument = r9                             6th argument = xmm5
+                                                                                          7th argument = xmm6
+
+  eax : return register, syscall number      
+  rax : return register, syscall number
+
+----------------------------------------------------------------------------------------------------------------------------------
+
+GAS Directives (MAC OSX)
+
+.section data                                            .section __DATA,__data   
+# your data here                                          # your data here 
+                                  OR
+.section text                                            .section __TEXT,__text  
+# your code here                                          # your code here
+
+    this way                is converted to                  this way   
 
 
+.lcomm
+  1. Defines a local uninitialized block of storage called a local common (LC) section
+  2. Use the .lcomm pseudo-op with local uninitialized data, which is data that will probably not be accessed outside the local assembly 
+  3. Allocates storage in the .css section
+
+.bss (block start by symbol)
+  1. Section for all uninitialized Variables.    
+
+.globl : make label accessible by other files
+
+  Snippet
+          .section text
+          .globl _main
+
+          _main:
+            movl $5, %eax
+            movl $3, %ebx
+            .
+            .
+            .   
+----------------------------------------------------------------------------------------------------------------------------------
+
+NASM Directives
+
+    .section .data
+    # your data here
+
+    .section .text
+    # your code here
+
+    BITS: Specifying Target Processor Mode
+
+    SECTION or SEGMENT: Changing and Defining Sections
+
+    EXTERN: Importing Symbols from Other Modules
+
+    COMMON: Defining Common Data Areas
+
+    GLOBAL: Exporting Symbols to Other Modules
+
+    STATIC: Local Symbols within Modules
+
+    EQU: Define Symbol to a given constant
+
+Pseudo-Instructions
+  Initialized Data
+    DB, DW, DD, DQ, DT, DO, DY and DZ
+
+  Uninitialized Data
+    RESB, RESW, RESD, RESQ, REST, RESQ, RESY and RESZ  
+
+----------------------------------------------------------------------------------------------------------------------------------
+
+Linux Syscalls
+  We use system calls to request services from the OS kernel.
+
+  section .data
+    msg db    "hello, world!"
+
+  section .text
+    global _start
+
+  _start:
+    mov   rax, 1          <-------------------------------  Syscall number 1 = write
+    mov   rdi, 1          <-------------------------------  1st argument to function
+    mov   rsi, msg        <-------------------------------  2nd argument to function
+    mov   rdx, 13         <-------------------------------  3rd argument to function  
+    syscall
+    mov   rax, 60                   rax - temporary resgister; when we call a  syscall, rax must contain syscall number
+    mov   rdi, 0                    rdx - used to pass 3rd argument to functions
+    syscall                         rdi - used to pass 1st argument to funtions
+                                    rsi - pointer used to pass 2nd argument to functions
 
 
+                            rdi               rsi             rdx
+    size_t sys_write( unsigned int fd, const char * buf, size_t count );
+
+    fd: file descriptor, 0 for standard input, 1 for standard output and 2 for standard error
+    buf: points to a character array, which can be used to store content obtained from the file pointed by fd
+    count: specifies the number of bytes to be written from the file into the character array.
+
+    https://filippo.io/linux-syscall-table/
+
+--------------------------------------------------------------------------------------------------------------------------------
 
 
-
-
-
-
+          
 
 
 
