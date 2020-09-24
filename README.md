@@ -569,10 +569,132 @@ Linux Syscalls
 
 --------------------------------------------------------------------------------------------------------------------------------
 
+Operand Types
 
-          
+  mnemonic
+  mnemonic [destination]
+  mnemonic [destination], [source]
+  mnemonic [destination], [source 1], [source 2]
 
+Types of Instruction Operands
+  Immediate -> uses numeric literal expression
+  Register -> uses named letter in the CPU
+  Memory -> uses memory location
 
+Direct Memory Operand
+  Variable names are reference to offset within the data segment    
+  E.g.,
+    .data
+    num1 BYTE 13h
+    This declaration shows a byte containing the number 13h has been allocated in the data segment.
+
+  Program code contains instructions that dereference memory operands using the addresses.
+  E.g.,   num1 is located at 10400h
+          to move it to Al, the instruction would look like this
+          mov AL, num1
+              |      
+              |
+        A0 00010400
+
+Some notation adopted for operands in x86 manuals
+  reg8  : 8-bit GPR:  AH, AH, BH, BL, CH, CL, DH, DL
+  reg16 : 16-bit GPR:   AX, BX, CX, DX, SI, DI, SP, BP
+  reg32 : 32-bit GPR:   EAX, EBX, ECX, EDX, ESI, EDI, ESP, EBP
+  reg : Any GPR
+  sreg  : 160bit segment register:    CS, DS, SS, ES, FS, GS
+  imm : 8-, 16-, or 32-bit immediate value
+  imm8  : 8-bit immediate byte value
+  imm16 : 32-bit immediate word value
+  imm32 : 32-bit immediate doubleword value
+  reg/mem8  : 8-bit operand, which can be an 8-bit general register or memory byte   
+  reg/mem16  : 16-bit operand, which can be an 16-bit general register or memory word
+  reg/mem32  : 32-bit operand, which can be an 32-bit general register or memory doubleword
+  mem : An 8-, 16-, or 32-bit memory operand
+
+----------------------------------------------------------------------------------------------------------------------------------
+
+The MOV Instruction
+
+copies dta from source to destination operand.
+
+    MOV destination, source
+
+Copying Smaller Values to Larger Ones: MOV cannot directly copy data from smaller operand to larger one.
+  E.g., Suppose we move count i.e., an unsigned 16-bit value to ECX(32-bit)
+      count : unsigned 16-bit value
+
+      .data
+      count WORD 1
+
+      .code
+      mov ecx, 0
+      mov cx, count
+----------------------------------------------------------------      
+ MOVZX (MOV with zero-extend)
+            MOVZX       reg32, reg/mem8
+            MOVZX       reg32, reg/mem16
+            MOVZX       reg16, reg/mem8
+    E.g.,
+    zero-extend binary 10001111b into AX:
+    .data
+    byteVal   BYTE  10001111b
+
+    .code
+    movzx ax, byteVal   ; AX = 0000000010001111b
+
+    # MOVZX to copy a byte into a 16-bit destination
+----------------------------------------------------------------
+MOVSX (MOV with sign-extend)
+          MOVSX       reg32, reg/mem8
+          MOVSX       reg32, reg/mem16
+          MOVSX       reg16, reg/mem8
+    An operand is sign extended by taking the smaller operand's highest bit and repeating the bit throughout the extended bit
+    and the destination operand
+    E.g.,
+      sign-extend binary 10001111b into AX:
+      .data
+      byteVal BYTE 10001111b
+
+      .code
+      movsx ax, byteVal ; AX = 1111111110001111b
+----------------------------------------------------------------
+Direct-Offset Operands:
+We can add a displacement to the name of variable creating direct offset operand
+This lets us access memory location that may not have explicit labels.
+e.g.,
+  numArray BYTE 10h, 20h, 30h, 40h, 50h
+  mov al, numArray  ; AL = 10h
+  mov al, [numArray+1]  ; AL = 20h
+  mov al, [numArray+2]  ; AL = 30h
+
+----------------------------------------------------------------------------------
+ Memory Address Modes
+ The x86 uses upto 4 components to specify memory operand
+ 1. Base Register
+ 2. Index Register
+ 3. Scale Factor
+ 4. Displacement Value
+
+ The Effective Address = BaseReg + IndexReg * ScaleFactor + DispValue
+
+ BaseReg can be any GPR
+ IndexReg can be any GPR except the Stack Pointer(SP)
+ DispValue are constants that are encoded within the instruction
+ The ScaleFactor can be 1, 2, 4 or 8
+ The size of Final Effective Address is always 32 bit.
+
+ Addressing Form                                Example
+  Disp                                      mov eax,  [MyVal]
+  BaseReg                                   mov eax,  [ebx]
+  BaseReg + Disp                            mov eax,  [ebx+12]
+  Disp + IndexReg * SF                      mov eax,  [MyArray+esi*4]
+  BaseReg + IndexReg                        mov eax,  [ebx+esi]
+  BaseReg + IndexReg + Disp                 mov eax,  [ebx+esi+12]
+  BaseReg + IndexReg * SF                   mov eax,  [ebx+esi*4]
+  BaseReg + IndexReg * SF + Disp            mov eax,  [ebx+esi*4+20]
+
+---------------------------------------------------------------------------------------------------
+   
 
 
 
