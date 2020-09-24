@@ -668,7 +668,7 @@ e.g.,
   mov al, [numArray+2]  ; AL = 30h
 
 ----------------------------------------------------------------------------------
- Memory Address Modes
+ Memory Address Modes:
  The x86 uses upto 4 components to specify memory operand
  1. Base Register
  2. Index Register
@@ -694,7 +694,66 @@ e.g.,
   BaseReg + IndexReg * SF + Disp            mov eax,  [ebx+esi*4+20]
 
 ---------------------------------------------------------------------------------------------------
-   
+Some Arithmetic Instructions
+  ADD - signed integer add
+  SUB - subtract
+  MUL - unsigned multiply
+  IMUL  - signed multiply
+  DIV - unsigned divide
+  IDIV  - signed divide
+  INC - increment
+  DEC - decrement
+  NEG - negate
+
+-------------------------------------------------------------------------------------------------------
+
+Arithmetic Instructions
+
+Increment and Decrement
+
+INC reg/mem
+DEC reg/mem
+
+  e.g.,
+    .data
+    myWord  WORD 1000h
+
+    .code
+    inc myWord    ;myWord = 1001h
+    mov bx, myWord
+    decbx ;BX = 1000h
+
+-------------------------------------------------------------------------------------------------------------
+
+Addition and Subtraction 
+
+ADD dest, source
+  e.g.,
+  .data
+  var1  DWORD 10000h
+  var2  DWORD 20000h
+
+  .code
+  mov eax,  var1  ;EAX = 10000h
+  add eax,  var2  ;EAX = 30000h
+
+SUB dest,source
+  e.g.,
+  .data
+  var1  DWORD 30000h
+  var2  DWORD 10000h
+
+  .code
+  mov eax,  var1  ;EAX = 30000h
+  sub eax,  var2  ;EAX = 20000h 
+
+-----------------------------------------------------------------------------------------------------------------
+int means interrupt, and the number 0x80 is the interrupt number. An interrupt transfers the program flow to whomever is handling that interrupt, which is interrupt 0x80 in this case. In Linux, 0x80 interrupt handler is the kernel, and is used to make system calls to the kernel by other programs.
+
+The kernel is notified about which system call the program wants to make, by examining the value in the register %eax (AT&T syntax, and EAX in Intel syntax). Each system call have different requirements about the use of the other registers. For example, a value of 1 in %eax means a system call of exit(), and the value in %ebx holds the value of the status code for exit().
+-------------------------------------------------------------------------------------------------------------------
+
+
 
 
 
