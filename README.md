@@ -753,6 +753,27 @@ int means interrupt, and the number 0x80 is the interrupt number. An interrupt t
 The kernel is notified about which system call the program wants to make, by examining the value in the register %eax (AT&T syntax, and EAX in Intel syntax). Each system call have different requirements about the use of the other registers. For example, a value of 1 in %eax means a system call of exit(), and the value in %ebx holds the value of the status code for exit().
 -------------------------------------------------------------------------------------------------------------------
 
+Data Operatives and Directives:
+Are not executable instructions, they are simply interpreted by the assembler.
+
+OPERATIVES----
+1. OFFSET:  Returns offset of a data label
+2. PTR: Override operand's default size
+3. TYPE:  Returns size of operand or array element size
+    e.g.,
+    TYPE of BYTE = 1
+    TYPE of WORD = 2
+    TYPE of DOUBLEWORD = 4
+    TYPE of QUADWORD = 8
+4. LENGTHOF:  Returns number of elements in an array
+5. SIZEOF: Returns number of bytes used by array initializer (TYPE * LENGTHOF) 
+
+DIRECTIVES----
+1. LABEL: Redefines same variable with different size attributes
+2. ALIGN: Aligns a variable on a boundary (boundary can be a byte, word or a dword)
+
+-------------------------------------------------------------------------------------------------------------------------------
+
 
 
 
