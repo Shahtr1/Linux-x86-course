@@ -774,6 +774,169 @@ DIRECTIVES----
 
 -------------------------------------------------------------------------------------------------------------------------------
 
+AT&T Syntax Addressing Modes
+1. Indexed Addressed: 
+  The memory location is determined by the following
+  - A base address
+  - An offset address to add to the base address
+  - The size of the data element
+  - An index to determine which data element to select
+
+  base_address(offset_address, index, size)
+
+  - The data value retreived is located at:
+    base_address + offset_address + index * size
+
+  - If any of the values are zero, they can be omitted 
+    (but the commas are still required as placeholders)
+    E.g.,
+        movl $2, %edi
+        movl values( , %edi, 4), %eax
+
+2.  Indirect Memory addressing
+  Move the memory address the value label references to the EDI register
+  E.g.,
+      movl  $values, %edi
+      movl  %ebx, (%edi)
+
+  - The dollar sign ($) before the label instructs the assembler to use the memory address, and not the data value located at the address
+  - Without the parentheses around the EDI register, the instruction would just load the value in the EBX register to the EDI register. With the parentheses around the EDI register, the instruction instead moves the value in the EBX register to the memory location contained in the EDI register.
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+Some Control Flow
+There is a CMP instruction, after this the below ones occurs on the basis of comparison results:-
+
+JE  - if equal
+JZ  - if zero
+JNE - if not equal
+JNZ - if not zero
+JG  - if first operand is greater than second
+JGE - if first operand is greater or equal to second
+JZ  - same as JG, but performs unsigned comparison
+JAE  - same as JGE, but performs unsigned comparison
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+Conditional Branching:-
+
+1. The Jump Instruction
+    The JMP causes an unconditional transfer to a destination, identified by a code label that is translated by the assembler into an offset. 
+    
+    JMP destination
+    E.g.,
+        start:
+        .
+        .
+        jmp start   ;repeat the endless loop
+
+2.  The Loop Instruction
+    It repeats a block of statement a specific number of times.
+    The ECX register is automatically used as a counter and is decremented each time a loop repeats.
+
+    LOOP destination steps
+    1. It subtracts 1 from ECX register,
+    2. It compares it to zero
+    3. If ECX is not equal to zero, then it jumps to the label identified by the destination.
+
+3.  Logic Instructions
+    AND Instruction performs a bitwise AND operation
+
+    AND destination, source  
+
+    Different operands in AND
+    - AND reg,reg 
+    - AND reg,mem
+    - AND reg,imm
+    - AND mem,reg
+    - AND mem,imm
+
+    OR Instruction performs a bitwise OR operation
+
+    OR destination, source  
+
+    Different operands in OR
+    - OR reg,reg 
+    - OR reg,mem
+    - OR reg,imm
+    - OR mem,reg
+    - OR mem,imm  
+
+    TEST Instruction
+      It performs an implied AND operation between each pair of matching bits in two operands and sets the sign zero in parity flags based on the value assigned in destination operand
+      TEST reg,reg
+
+      test al, 00001001b ; test bits 0 and 3 in the al register      
+
+    CMP Instruction
+      CMP destination, source
+
+      It performs subtraction of source from a destination operand.
+
+    Condtional Jump Instruction
+      
+      SUB-----|
+              |
+      AND-----|-> Modify CPU status flags
+              |
+      CMP-----|
+
+      Jcond destination
+
+      E.g.,                                                       E.g.,
+          cmp eax, 0                                                  cmp eax, 0 
+          jz level2 ; jump if ZF = 1                                  jnz level2 ; jump if ZF = 0
+          .                                                           .
+          .                                                           .
+          level2:                                                     level2:
+
+      Table:
+
+          JC              Jump if Carry flag is set               CF = 1 
+          JNC             Jump if Carry flag is not set           CF = 0
+
+          JZ              Jump if Zero flag is set                ZF = 1 
+          JNC             Jump if Zero flag is not set            ZF = 0
+
+          JO              Jump if Overflow flag is set            CF = 1 
+          JNO             Jump if Overflow flag is not set        CF = 0 
+
+          JS              Jump if signed flag is set              SF = 1 
+          JNS             Jump if signed flag is not set          SF = 0 
+
+          JP              Jump if parity flag is set              PF = 1 
+          JNP             Jump if parity flag is not set          PF = 0  
+
+
+      Equality Comparisons
+        JE          Jump if equal
+        JNE         Jump if not equal
+        JCXZ        Jump if CX = 0 
+        JECXZ        Jump if ECX = 0 
+
+                     CMP leftOp, rightOp     
+
+--------------------------------------------------------------------------------------------------------------------------------        
+Instruction Operands
+            Type                          Example                     In C/C++
+
+          Immediate                     mov eax, 42                   eax = 42
+                                        imul ebx, 11h                 ebx *= 0*11
+                                        xor dl, 55h                   dl ^= 0x55
+                                        add esi, 8                    esi += 8
+
+          Register                      mov eax, ebx                  eax = ebx
+                                        inc ecx                       ecx += 1
+                                        add ebx, esi                  ebx += esi
+                                        mul ebx                       edx:eax = eax * ebx
+
+          Memory                        mov eax, [ebx]                eax = *ebx
+                                        add eax, [val1]               eax += *val1
+                                        or ecx, [ebx+esi]             ecx |= *(ebx + esi)
+                                        sub word ptr [edi],12         *(short*)edi -= 12
+
+
+--------------------------------------------------------------------------------------------------------------------------------                                        
 
 
 
